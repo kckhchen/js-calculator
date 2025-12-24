@@ -52,7 +52,12 @@ function changeDisplay(e) {
             display.textContent = ""
         }
         if (e.target.id == "dot"){
-            if (display.textContent.includes(".") && !operatorList.some(opt => display.textContent.includes(opt)) || display.textContent.match(/\d?\..*\d?\./) || display.textContent == "" || operatorList.includes(display.textContent.at(-1))) {
+            if (
+                display.textContent.includes(".") && !operatorList.some(opt => display.textContent.includes(opt)) || 
+                display.textContent.match(/\d?\..*\d?\./) || 
+                display.textContent == "" || 
+                operatorList.includes(display.textContent.at(-1))
+            ) {
                 return;
             }
         }
