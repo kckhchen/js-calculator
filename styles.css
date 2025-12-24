@@ -1,5 +1,10 @@
+:root {
+  --main-color: rgb(153, 33, 33);
+}
+
 * {
   box-sizing: border-box;
+  font-family: sans-serif;
 }
 
 body {
@@ -13,23 +18,25 @@ div.container {
   height: 600px;
   width: 400px;
   border-radius: 20px;
-  background-color: rgb(202, 148, 82);
+  background-color: var(--main-color);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 40px;
   gap: 15px;
+  box-shadow: 8px 8px 0px 0px rgb(96, 31, 31);
 }
 
 .display {
   flex: 3;
-  background-color: silver;
+  background-color: rgb(143, 143, 143);
   border-radius: 20px;
+  overflow: hidden;
 }
 
 .buttonrow {
   flex: 2;
-  background-color: rgb(202, 148, 82);
+  background-color: var(--main-color);
   display: flex;
   justify-content: space-between;
   gap: 15px;
@@ -39,9 +46,32 @@ div.container {
   border-radius: 20%;
   flex: 1;
   font-size: 30px;
-  background-color: rgb(107, 107, 107);
+  background-color: rgb(79, 79, 79);
   color: aliceblue;
   font-weight: 900;
+  border: none;
+
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.5);
+  transition: transform 0.05s, box-shadow 0.05s;
+}
+
+.buttonrow button:hover {
+  background-color: rgb(115, 115, 115);
+}
+
+.buttonrow button:active {
+  transform: translateY(2px) translateX(2px);
+  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.5);
+}
+
+.buttonrow.firstrow {
+  justify-content: flex-end;
+}
+
+.buttonrow.firstrow button {
+  flex: 0 1 0;
+  font-size: 20px;
+  min-width: 70px;
 }
 
 .display {
