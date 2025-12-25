@@ -2,6 +2,7 @@ const container = document.querySelector('.container');
 const display = document.querySelector('.display');
 const operatorList = ['+', '-', '×', '÷'];
 const sound = new Audio('./assets/click-sound.mov');
+sound.volume = 0.5;
 let answerReturned;
 
 container.addEventListener('click', (e) => {
@@ -244,3 +245,26 @@ historyList.addEventListener('click', (e) => {
     answerReturned = false;
   }
 });
+
+// Copy answer to clipboard when display is clicked
+const toast = document.getElementById('toast');
+const TOASTTIMEOUT = 1500;
+let toastTimeOut;
+
+display.addEventListener('click', () => {
+  if (display.textContent === '') {
+    showToast('Nothing to copy');
+  } else {
+    navigator.clipboard.writeText(display.textContent);
+    showToast('Copied to clipboard!');
+  }
+});
+
+function showToast(message = 'Copied!') {
+  toast.textContent = message;
+  clearTimeout(toastTimeOut);
+  toast.classList.add('show');
+  toastTimeOut = setTimeout(() => {
+    toast.classList.remove('show');
+  }, TOASTTIMEOUT);
+}
