@@ -9,8 +9,12 @@ container.addEventListener('click', (e) => {
   if (e.target.nodeName !== 'BUTTON') {
     return;
   }
-  sound.currentTime = 0;
-  sound.play();
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  if (!isMobile) {
+    sound.currentTime = 0;
+    sound.play();
+  }
 
   changeDisplay(e);
 });
@@ -114,6 +118,8 @@ function handleEqual() {
   const expression = getEval();
   if (!expression) return;
   let [num1, operator, num2] = expression;
+  if (num1 === '' || num2 === '') return;
+
   let answer = getAnswer(num1, num2, operator);
   display.textContent = answer;
   updateDisplay();

@@ -20,6 +20,7 @@ A web calculator built with HTML, CSS, and JavaScript. A Project inspired by [Th
 - **Calculation History**: Stores up to 20 past entries in an expandable list. Clicking on a historical entry brings to answer to the display.
 - **Click to Copy**: Click display to copy current text.
 - **Clicky Buttons**: Buttons play nice sounds when clicked!
+- **Looks Great on Mobiles Too!**
 
 ## ⌨️ Keyboard Shortcuts
 

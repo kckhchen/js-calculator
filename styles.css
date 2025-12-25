@@ -44,6 +44,10 @@ body {
   gap: 20px;
 }
 
+button {
+  touch-action: manipulation;
+}
+
 header {
   height: 80px;
   flex-shrink: 1;
@@ -276,5 +280,40 @@ body.dark-mode .history-paper {
   }
   100% {
     transform: rotate(0deg);
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    height: 100dvh;
+    gap: 20px;
+    padding-bottom: 10px;
+  }
+
+  header {
+    padding: 15px;
+    height: 80px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  div.container {
+    width: 85%;
+    max-width: 400px;
+    height: auto;
+    flex: 1;
+    padding: 20px;
+    margin-bottom: 15px;
+  }
+
+  .display {
+    font-size: 40px;
+    padding: 10px;
+  }
+
+  .buttonrow button {
+    font-size: 24px;
   }
 }
