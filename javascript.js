@@ -41,6 +41,7 @@ function changeDisplay(e) {
   if (btn.id === 'equal') return handleEqual();
   if (btn.id === 'dot') return handleDecimal();
   if (btn.id === 'sign') return changeSign();
+  if (btn.id === 'square') return getSquare();
   if (btn.classList.contains('operator'))
     return handleOperator(btn.textContent);
   if (btn.classList.contains('number')) return appendNumber(btn.textContent);
@@ -48,6 +49,7 @@ function changeDisplay(e) {
 
 function clearDisplay() {
   display.textContent = '';
+  answerReturned = false;
   updateDisplay();
 }
 
@@ -154,11 +156,29 @@ function getAnswer(num1, num2, operator) {
 }
 
 function changeSign() {
-  if (display.textContent.at(0) !== '-') {
-    display.textContent = '-' + display.textContent;
-  } else {
-    display.textContent = display.textContent.slice(1);
+  if (display.textContent === '') {
+    display.textContent = '-';
   }
+  const currentNum = getCurrentOperand();
+  if (!currentNum) return;
+
+  const signed = currentNum * -1;
+  display.textContent =
+    display.textContent.slice(0, -currentNum.length) + signed;
+  updateDisplay();
+}
+
+function getSquare() {
+  const currentNum = getCurrentOperand();
+  if (!currentNum) return;
+
+  const base = parseFloat(currentNum);
+  const answer = roundTo(base ** 2, 8);
+  display.textContent =
+    display.textContent.slice(0, -currentNum.length) + answer;
+  updateDisplay();
+  answerReturned = true;
+  addHistoryItem([base, '×', base, answer]);
 }
 
 const roundTo = function (num, decimal) {
@@ -166,8 +186,9 @@ const roundTo = function (num, decimal) {
 };
 
 function getCurrentOperand() {
-  const parts = display.textContent.split(/[+\-×÷]/);
-  return parts[parts.length - 1];
+  const match = display.textContent.match(/(^|[+\-×÷])(-?\d+\.?\d*)$/);
+  if (match) return match[2];
+  return null;
 }
 
 const themeToggleBtn = document.getElementById('theme-toggle');
@@ -253,11 +274,11 @@ function addHistoryItem(entry) {
 }
 
 // Copy entry to display if clicked
-
 historyList.addEventListener('click', (e) => {
   if (e.target.classList.contains('history-item')) {
     const answer = e.target.textContent.split('= ').at(-1);
     display.textContent = answer;
+    updateDisplay();
     answerReturned = false;
   }
 });
