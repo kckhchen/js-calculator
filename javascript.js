@@ -6,26 +6,20 @@ const sound = new Audio('./clickSound.mov');
 let answerReturned;
 
 container.addEventListener('click', (e) => {
-  if (e.target.nodeName != 'BUTTON') {
+  if (e.target.nodeName !== 'BUTTON') {
     return;
   }
   sound.currentTime = 0;
   sound.play();
+
   changeDisplay(e);
-  if (e.target.id == 'equal' && getEval(e) != undefined) {
-    let [num1, operator, num2] = getEval(e);
-    //console.log([num1, operator, num2])
-    let answer = getAnswer(num1, num2, operator);
-    display.textContent = answer;
-    answerReturned = true;
-  }
 });
 
 document.addEventListener('keydown', (e) => {
   let key = e.key;
   if (key === 'Enter') key = '=';
   if (key === 'Backspace') key = '←';
-  if (key === 'Escape') key = 'AC';
+  if (key === 'Escape' || key === 'Delete') key = 'AC';
   if (key === '*') key = '×';
   if (key === '/') key = '÷';
   const buttons = Array.from(document.querySelectorAll('button'));
@@ -44,7 +38,7 @@ function changeDisplay(e) {
   const btn = e.target;
   if (btn.id === 'clear') return clearDisplay();
   if (btn.id === 'back') return deleteLastChar();
-  if (btn.id === 'equal') return;
+  if (btn.id === 'equal') return handleEqual();
   if (btn.id === 'dot') return handleDecimal();
   if (btn.classList.contains('operator'))
     return handleOperator(btn.textContent);
@@ -68,8 +62,7 @@ function handleOperator(opt) {
   } else if (display.textContent === '' && opt !== '-') {
     return;
   } else if (operatorList.some((opt) => display.textContent.includes(opt))) {
-    const equalBtn = document.getElementById('equal');
-    equalBtn.click();
+    handleEqual();
     display.textContent += opt;
   } else {
     display.textContent += opt;
@@ -78,8 +71,7 @@ function handleOperator(opt) {
 }
 
 function handleDecimal() {
-  const parts = display.textContent.split(/[+\-×÷]/);
-  const currentNum = parts[parts.length - 1];
+  const currentNum = getCurrentOperand();
 
   if (currentNum.includes('.') && !answerReturned) {
     return;
@@ -101,10 +93,24 @@ function appendNumber(num) {
     clearDisplay();
     answerReturned = false;
   }
-  display.textContent += num;
+  const currentNum = getCurrentOperand();
+  if (currentNum === '0') {
+    display.textContent = display.textContent.slice(0, -1) + num;
+  } else {
+    display.textContent += num;
+  }
 }
 
-function getEval(e) {
+function handleEqual() {
+  const expression = getEval();
+  if (!expression) return;
+  let [num1, operator, num2] = expression;
+  let answer = getAnswer(num1, num2, operator);
+  display.textContent = answer;
+  answerReturned = true;
+}
+
+function getEval() {
   const regex = /(-?\d*\.?\d*)([+\-×÷])(-?\d*\.?\d*)/;
   if (display.textContent.match(regex)) {
     let [num1, operator, num2] = display.textContent.match(regex).slice(1);
@@ -128,7 +134,7 @@ function getAnswer(num1, num2, operator) {
       answer = num1 * num2;
       break;
     case '÷':
-      if (num2 == 0) {
+      if (num2 === 0) {
         alert('Error: Division by zero.');
         return '';
       }
@@ -141,3 +147,8 @@ function getAnswer(num1, num2, operator) {
 const roundTo = function (num, decimal) {
   return Math.round(num * 10 ** decimal) / 10 ** decimal;
 };
+
+function getCurrentOperand() {
+  const parts = display.textContent.split(/[+\-×÷]/);
+  return parts[parts.length - 1];
+}
