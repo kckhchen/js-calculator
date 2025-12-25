@@ -3,14 +3,13 @@ const display = document.querySelector('.display');
 const operatorList = ['+', '-', '×', '÷'];
 const sound = new Audio('./clickSound.mov');
 
-let currentOpt;
 let answerReturned;
 
 container.addEventListener('click', (e) => {
   if (e.target.nodeName != 'BUTTON') {
     return;
   }
-  sound.currentTime = 0; // Rewind to start (allows rapid fire)
+  sound.currentTime = 0;
   sound.play();
   changeDisplay(e);
   if (e.target.id == 'equal' && getEval(e) != undefined) {
@@ -42,50 +41,67 @@ document.addEventListener('keydown', (e) => {
 });
 
 function changeDisplay(e) {
-  if (e.target.id == 'clear') {
-    display.textContent = '';
-  } else if (e.target.id == 'back') {
-    display.textContent = display.textContent.slice(0, -1);
-  } else if (e.target.classList[0] == 'operator') {
-    currentOpt = e.target.textContent;
-    if (operatorList.includes(display.textContent.at(-1))) {
-      if (display.textContent === '-' && currentOpt !== '-') {
-        return;
-      }
-      display.textContent = display.textContent.slice(0, -1) + currentOpt;
-    } else if (display.textContent == '' && currentOpt != '-') {
+  const btn = e.target;
+  if (btn.id === 'clear') return clearDisplay();
+  if (btn.id === 'back') return deleteLastChar();
+  if (btn.id === 'equal') return;
+  if (btn.id === 'dot') return handleDecimal();
+  if (btn.classList.contains('operator'))
+    return handleOperator(btn.textContent);
+  if (btn.classList.contains('number')) return appendNumber(btn.textContent);
+}
+
+function clearDisplay() {
+  display.textContent = '';
+}
+
+function deleteLastChar() {
+  display.textContent = display.textContent.slice(0, -1);
+}
+
+function handleOperator(opt) {
+  if (operatorList.includes(display.textContent.at(-1))) {
+    if (display.textContent === '-' && opt !== '-') {
       return;
-    } else if (operatorList.some((opt) => display.textContent.includes(opt))) {
-      const equalBtn = document.getElementById('equal');
-      equalBtn.click();
-      display.textContent += currentOpt;
-    } else {
-      display.textContent += currentOpt;
     }
-  } else if (e.target.id == 'equal') {
+    display.textContent = display.textContent.slice(0, -1) + opt;
+  } else if (display.textContent === '' && opt !== '-') {
     return;
+  } else if (operatorList.some((opt) => display.textContent.includes(opt))) {
+    const equalBtn = document.getElementById('equal');
+    equalBtn.click();
+    display.textContent += opt;
   } else {
-    if (answerReturned) {
-      display.textContent = '';
-    }
-    if (e.target.id == 'dot') {
-      const parts = display.textContent.split(/[+\-×÷]/);
-      const currentNum = parts[parts.length - 1];
-
-      if (currentNum.includes('.')) {
-        return;
-      }
-
-      if (
-        display.textContent === '' ||
-        operatorList.includes(display.textContent.at(-1))
-      ) {
-        display.textContent += '0';
-      }
-    }
-    display.textContent += e.target.textContent;
+    display.textContent += opt;
   }
   answerReturned = false;
+}
+
+function handleDecimal() {
+  const parts = display.textContent.split(/[+\-×÷]/);
+  const currentNum = parts[parts.length - 1];
+
+  if (currentNum.includes('.') && !answerReturned) {
+    return;
+  }
+
+  if (
+    display.textContent === '' ||
+    operatorList.includes(display.textContent.at(-1)) ||
+    answerReturned
+  ) {
+    appendNumber('0.');
+  } else {
+    appendNumber('.');
+  }
+}
+
+function appendNumber(num) {
+  if (answerReturned) {
+    clearDisplay();
+    answerReturned = false;
+  }
+  display.textContent += num;
 }
 
 function getEval(e) {
