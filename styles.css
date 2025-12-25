@@ -1,5 +1,27 @@
 :root {
+  --bg-color: #f3efc7;
+  --header-bg-color: #f3d585;
+  --header-font-color: #232323;
+  --main-color: #e99696;
+  --btn-color: #f0bbbb;
+  --shadow-color: #a16f6f;
+  --display-bg-color: #fafafa;
+  --display-border-color: #dd8888;
+  --display-text-color: #5f5f5f;
+  --hover-color: #ed8787;
+}
+
+body.dark-mode {
+  --bg-color: #1b1b1b;
+  --header-bg-color: #101010;
+  --header-font-color: #fafafa;
   --main-color: rgb(153, 33, 33);
+  --btn-color: #652c2c;
+  --shadow-color: #a16f6f;
+  --display-bg-color: #3c3c3c;
+  --display-border-color: #801515;
+  --display-text-color: #ffffff;
+  --hover-color: #863939;
 }
 
 * {
@@ -8,15 +30,51 @@
 }
 
 body {
+  background-color: var(--bg-color);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   height: 100vh;
+  margin: 0;
+}
+
+header {
+  height: 100px;
+  align-self: stretch;
+  background-color: var(--header-bg-color);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 40px;
+}
+
+.title {
+  font-weight: 900;
+  font-size: 30px;
+  font-family: 'Rubik Gemstones', serif;
+  color: var(--header-font-color);
+}
+
+#theme-toggle {
+  height: 30px;
+  font-weight: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+#theme-toggle:hover {
+  opacity: 0.8;
+  transform: scale(1.1); /* Tiny pop effect */
+  transition: transform 0.2s;
 }
 
 div.container {
   height: 600px;
   width: 400px;
+  margin: auto;
   border-radius: 20px;
   background-color: var(--main-color);
   display: flex;
@@ -24,20 +82,26 @@ div.container {
   justify-content: space-between;
   padding: 40px;
   gap: 15px;
-  box-shadow: 8px 8px 0px 0px rgb(96, 31, 31);
+  box-shadow: 8px 8px 0px 0px var(--shadow-color);
 }
 
 .display {
   flex: 3;
-  background-color: rgb(143, 143, 143);
+  background-color: var(--display-bg-color);
   border-radius: 20px;
   overflow: hidden;
-  border: 5px solid black;
+  border: 5px solid var(--display-border-color);
+  color: var(--display-text-color);
+  padding: 20px;
+  font-weight: 700;
+  font-size: 64px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .buttonrow {
   flex: 2;
-  background-color: var(--main-color);
   display: flex;
   justify-content: space-between;
   gap: 15px;
@@ -47,7 +111,7 @@ div.container {
   border-radius: 20%;
   flex: 1;
   font-size: 30px;
-  background-color: rgb(79, 79, 79);
+  background-color: var(--btn-color);
   color: aliceblue;
   font-weight: 900;
   border: none;
@@ -57,7 +121,7 @@ div.container {
 }
 
 .buttonrow button:hover {
-  background-color: rgb(115, 115, 115);
+  background-color: var(--hover-color);
 }
 
 .buttonrow button:active,
@@ -74,14 +138,4 @@ div.container {
   flex: 0 1 0;
   font-size: 20px;
   min-width: 70px;
-}
-
-.display {
-  padding: 20px;
-  font-weight: 700;
-  font-size: 64px;
-  color: aliceblue;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
 }

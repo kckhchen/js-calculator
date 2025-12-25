@@ -4,10 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Online Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik+Gemstones&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles.css" />
     <script src="javascript.js" defer></script>
   </head>
-  <body>
+  <body class="dark-mode">
+    <header>
+      <div class="title">ONLINE CALCULATOR</div>
+      <button id="theme-toggle" aria-label="Toggle Dark Mode">
+        <img
+          src="/assets/dark-mode.png"
+          alt="Toggle Theme"
+          class="theme-icon"
+          width="30px"
+        />
+      </button>
+    </header>
     <div class="container">
       <div class="display"></div>
       <div class="buttonrow firstrow">

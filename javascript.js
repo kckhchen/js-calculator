@@ -1,8 +1,7 @@
 const container = document.querySelector('.container');
 const display = document.querySelector('.display');
 const operatorList = ['+', '-', '×', '÷'];
-const sound = new Audio('./clickSound.mov');
-
+const sound = new Audio('./assets/click-sound.mov');
 let answerReturned;
 
 container.addEventListener('click', (e) => {
@@ -152,3 +151,39 @@ function getCurrentOperand() {
   const parts = display.textContent.split(/[+\-×÷]/);
   return parts[parts.length - 1];
 }
+
+const themeToggleBtn = document.getElementById('theme-toggle');
+const themeIcon = document.querySelector('.theme-icon');
+const body = document.body;
+
+// Dark mode toggle
+const moonIcon = '/assets/dark-mode.png';
+const sunIcon = '/assets/light-mode.png';
+
+function setDarkTheme(isDark) {
+  if (isDark) {
+    body.classList.add('dark-mode');
+    themeIcon.src = sunIcon;
+    localStorage.setItem('theme', 'dark');
+  } else {
+    body.classList.remove('dark-mode');
+    themeIcon.src = moonIcon;
+    localStorage.setItem('theme', 'light');
+  }
+}
+
+const currentTheme = localStorage.getItem('theme');
+const systemPrefersDark = window.matchMedia(
+  '(prefers-color-scheme: dark)'
+).matches;
+
+if (currentTheme === 'dark' || systemPrefersDark) {
+  setDarkTheme(true);
+} else if (currentTheme === 'light') {
+  setDarkTheme(false);
+}
+
+themeToggleBtn.addEventListener('click', () => {
+  const isDark = body.classList.contains('dark-mode');
+  setDarkTheme(!isDark);
+});
