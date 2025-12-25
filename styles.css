@@ -4,7 +4,7 @@
 
 * {
   box-sizing: border-box;
-  font-family: sans-serif;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
 }
 
 body {
@@ -32,6 +32,7 @@ div.container {
   background-color: rgb(143, 143, 143);
   border-radius: 20px;
   overflow: hidden;
+  border: 5px solid black;
 }
 
 .buttonrow {
@@ -59,7 +60,8 @@ div.container {
   background-color: rgb(115, 115, 115);
 }
 
-.buttonrow button:active {
+.buttonrow button:active,
+.buttonrow button.pressed {
   transform: translateY(2px) translateX(2px);
   box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.5);
 }

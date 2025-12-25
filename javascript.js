@@ -1,106 +1,119 @@
-const container = document.querySelector(".container")
-const display = document.querySelector(".display")
-const operatorList = ["+", "-", "×", "÷"]
+const container = document.querySelector('.container');
+const display = document.querySelector('.display');
+const operatorList = ['+', '-', '×', '÷'];
+const clickSound = './clickSound.mov';
 
-let currentOpt
-let answerReturned
+let currentOpt;
+let answerReturned;
 
 container.addEventListener('click', (e) => {
-    if (e.target.nodeName != "BUTTON"){
-        return;
-    }
-    changeDisplay(e)
-    if (e.target.id == "equal" && getEval(e) != undefined) {
-        let [num1, operator, num2] = getEval(e)
-        //console.log([num1, operator, num2])
-        let answer = getAnswer(num1, num2, operator)
-        display.textContent = answer
-        answerReturned = true
-    }
-    }
-)
+  if (e.target.nodeName != 'BUTTON') {
+    return;
+  }
+  new Audio(clickSound).play();
+  changeDisplay(e);
+  if (e.target.id == 'equal' && getEval(e) != undefined) {
+    let [num1, operator, num2] = getEval(e);
+    //console.log([num1, operator, num2])
+    let answer = getAnswer(num1, num2, operator);
+    display.textContent = answer;
+    answerReturned = true;
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  let key = e.key;
+  if (key === 'Enter') key = '=';
+  if (key === 'Backspace') key = '←';
+  if (key === 'Escape') key = 'AC';
+  if (key === '*') key = '×';
+  if (key === '/') key = '÷';
+  const buttons = Array.from(document.querySelectorAll('button'));
+  const button = buttons.find((btn) => btn.textContent === key);
+  if (button) {
+    e.preventDefault();
+    button.click();
+    button.classList.add('pressed');
+    setTimeout(() => {
+      button.classList.remove('pressed');
+    }, 100);
+  }
+});
 
 function changeDisplay(e) {
-    if (e.target.id == "clear") {
-        display.textContent = ""
+  if (e.target.id == 'clear') {
+    display.textContent = '';
+  } else if (e.target.id == 'back') {
+    display.textContent = display.textContent.slice(0, -1);
+  } else if (e.target.classList[0] == 'operator') {
+    currentOpt = e.target.textContent;
+    if (operatorList.includes(display.textContent.at(-1))) {
+      display.textContent = display.textContent.slice(0, -1) + currentOpt;
+    } else if (display.textContent == '') {
+      return;
+    } else if (operatorList.some((opt) => display.textContent.includes(opt))) {
+      const equalBtn = document.getElementById('equal');
+      equalBtn.click();
+      display.textContent += currentOpt;
+    } else {
+      display.textContent += currentOpt;
     }
-    else if (e.target.id == "back") {
-        display.textContent = display.textContent.slice(0, -1)
+  } else if (e.target.id == 'equal') {
+    return;
+  } else {
+    if (answerReturned) {
+      display.textContent = '';
     }
-    else if (e.target.classList[0] == "operator") {
-        currentOpt = e.target.textContent
-        if (operatorList.includes(display.textContent.at(-1))) {
-            display.textContent = display.textContent.slice(0, -1) + currentOpt
-        }
-        else if (display.textContent == "") {
-            return
-        }
-        else if (operatorList.some(opt => display.textContent.includes(opt))){
-            const equalBtn = document.getElementById("equal")
-            equalBtn.click()
-            display.textContent += currentOpt
-        }
-        else {
-            display.textContent += currentOpt
-        }
-    }
-    else if (e.target.id == "equal") {
+    if (e.target.id == 'dot') {
+      if (
+        (display.textContent.includes('.') &&
+          !operatorList.some((opt) => display.textContent.includes(opt))) ||
+        display.textContent.match(/\d?\..*\d?\./) ||
+        display.textContent == '' ||
+        operatorList.includes(display.textContent.at(-1))
+      ) {
         return;
+      }
     }
-    else {
-        if (answerReturned) {
-            display.textContent = ""
-        }
-        if (e.target.id == "dot"){
-            if (
-                display.textContent.includes(".") && !operatorList.some(opt => display.textContent.includes(opt)) || 
-                display.textContent.match(/\d?\..*\d?\./) || 
-                display.textContent == "" || 
-                operatorList.includes(display.textContent.at(-1))
-            ) {
-                return;
-            }
-        }
-        display.textContent += e.target.textContent
-    }
-    answerReturned = false;
+    display.textContent += e.target.textContent;
+  }
+  answerReturned = false;
 }
 
 function getEval(e) {
-    const regex = /(\d*\.*\d+)([+\-×÷])(\d*\.*\d+)/
-    if (display.textContent.match(regex)) {
-        let [num1, operator, num2] = display.textContent.match(regex).slice(1)
-        return([num1, operator, num2])
-    }
-    return;
+  const regex = /(\d*\.*\d+)([+\-×÷])(\d*\.*\d+)/;
+  if (display.textContent.match(regex)) {
+    let [num1, operator, num2] = display.textContent.match(regex).slice(1);
+    return [num1, operator, num2];
+  }
+  return;
 }
 
 function getAnswer(num1, num2, operator) {
-    num1 = Number(num1)
-    num2 = Number(num2)
-    let answer
-    switch(operator){
-        case "+":
-            answer = num1 + num2
-            break;
-        case "-":
-            answer = num1 - num2
-            break;
-        case "×":
-            answer = num1 * num2
-            break;
-        case "÷":
-            if (num2 == 0){
-                alert ("Error: Division by zero.")
-                return ""
-            }
-            answer = num1 / num2
-            break;
-
-    }
-    return roundTo(answer, 3)
+  num1 = Number(num1);
+  num2 = Number(num2);
+  let answer;
+  switch (operator) {
+    case '+':
+      answer = num1 + num2;
+      break;
+    case '-':
+      answer = num1 - num2;
+      break;
+    case '×':
+      answer = num1 * num2;
+      break;
+    case '÷':
+      if (num2 == 0) {
+        alert('Error: Division by zero.');
+        return '';
+      }
+      answer = num1 / num2;
+      break;
+  }
+  return roundTo(answer, 3);
 }
 
-const roundTo =  function(num, decimal) {
-  return Math.round(num * 10 ** decimal) / (10 ** decimal)
-}
+const roundTo = function (num, decimal) {
+  return Math.round(num * 10 ** decimal) / 10 ** decimal;
+};
