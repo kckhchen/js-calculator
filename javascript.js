@@ -107,6 +107,7 @@ function handleEqual() {
   let answer = getAnswer(num1, num2, operator);
   display.textContent = answer;
   answerReturned = true;
+  addHistoryItem([num1, operator, num2, answer]);
 }
 
 function getEval() {
@@ -186,4 +187,60 @@ if (currentTheme === 'dark' || systemPrefersDark) {
 themeToggleBtn.addEventListener('click', () => {
   const isDark = body.classList.contains('dark-mode');
   setDarkTheme(!isDark);
+});
+
+// history page toggle
+const historyIcon = document.getElementById('history-toggle');
+const historyPaper = document.getElementById('history-paper');
+const HISTORYTIMEOUT = 200;
+let closeTimer;
+
+historyIcon.addEventListener('mouseenter', () => {
+  clearTimeout(closeTimer);
+  historyPaper.classList.add('open');
+});
+
+historyIcon.addEventListener('mouseleave', () => {
+  startCloseTimer();
+});
+
+historyPaper.addEventListener('mouseenter', () => {
+  clearTimeout(closeTimer);
+});
+
+historyPaper.addEventListener('mouseleave', () => {
+  startCloseTimer();
+});
+
+function startCloseTimer() {
+  closeTimer = setTimeout(() => {
+    historyPaper.classList.remove('open');
+  }, HISTORYTIMEOUT);
+}
+
+// Add history item to list
+const historyList = document.getElementById('history-list');
+const MAXHISTORY = 20;
+function addHistoryItem(entry) {
+  if (
+    historyList.firstElementChild.classList.contains('empty-msg') ||
+    historyList.childElementCount >= MAXHISTORY
+  ) {
+    historyList.removeChild(historyList.firstElementChild);
+  }
+  entry.splice(entry.length - 1, 0, '=');
+  const historyItem = document.createElement('li');
+  historyItem.classList.add('history-item');
+  historyItem.textContent = entry.join(' ');
+  historyList.appendChild(historyItem);
+}
+
+// Copy entry to display if clicked
+
+historyList.addEventListener('click', (e) => {
+  if (e.target.classList.contains('history-item')) {
+    const answer = e.target.textContent.split('= ').at(-1);
+    display.textContent = answer;
+    answerReturned = false;
+  }
 });
