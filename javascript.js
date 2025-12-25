@@ -260,17 +260,17 @@ function startCloseTimer() {
 const historyList = document.getElementById('history-list');
 const MAXHISTORY = 20;
 function addHistoryItem(entry) {
-  if (
-    historyList.firstElementChild.classList.contains('empty-msg') ||
-    historyList.childElementCount >= MAXHISTORY
-  ) {
-    historyList.removeChild(historyList.firstElementChild);
-  }
   entry.splice(entry.length - 1, 0, '=');
   const historyItem = document.createElement('li');
   historyItem.classList.add('history-item');
   historyItem.textContent = entry.join(' ');
-  historyList.appendChild(historyItem);
+  historyList.insertBefore(historyItem, historyList.firstChild);
+  if (
+    historyList.lastElementChild.classList.contains('empty-msg') ||
+    historyList.childElementCount >= MAXHISTORY
+  ) {
+    historyList.removeChild(historyList.lastElementChild);
+  }
 }
 
 // Copy entry to display if clicked
