@@ -1,7 +1,7 @@
 const container = document.querySelector('.container');
 const display = document.querySelector('.display');
 const operatorList = ['+', '-', '×', '÷'];
-const sound = new Audio('./assets/click-sound.mov');
+const sound = new Audio('./assets/click-sound.mp3');
 sound.volume = 0.5;
 let answerReturned;
 
@@ -40,6 +40,7 @@ function changeDisplay(e) {
   if (btn.id === 'back') return deleteLastChar();
   if (btn.id === 'equal') return handleEqual();
   if (btn.id === 'dot') return handleDecimal();
+  if (btn.id === 'sign') return changeSign();
   if (btn.classList.contains('operator'))
     return handleOperator(btn.textContent);
   if (btn.classList.contains('number')) return appendNumber(btn.textContent);
@@ -63,7 +64,9 @@ function handleOperator(opt) {
     display.textContent = display.textContent.slice(0, -1) + opt;
   } else if (display.textContent === '' && opt !== '-') {
     return;
-  } else if (operatorList.some((opt) => display.textContent.includes(opt))) {
+  } else if (
+    operatorList.some((opt) => display.textContent.slice(1).includes(opt))
+  ) {
     handleEqual();
     display.textContent += opt;
   } else {
@@ -148,6 +151,14 @@ function getAnswer(num1, num2, operator) {
       break;
   }
   return roundTo(answer, 8);
+}
+
+function changeSign() {
+  if (display.textContent.at(0) !== '-') {
+    display.textContent = '-' + display.textContent;
+  } else {
+    display.textContent = display.textContent.slice(1);
+  }
 }
 
 const roundTo = function (num, decimal) {
