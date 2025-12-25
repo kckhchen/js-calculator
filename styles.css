@@ -80,12 +80,47 @@ header {
 
 .header-button:hover {
   opacity: 0.8;
-  transform: scale(1.1); /* Tiny pop effect */
+  transform: scale(1.1);
   transition: transform 0.2s;
+}
+
+.icon-sun:hover {
+  transform: rotate(-0.1turn);
+  transition: transform 0.5s;
+}
+
+.icon-moon:hover {
+  transform: translateY(-3px);
+  transition: transform 0.5s;
 }
 
 #history-toggle {
   color: var(--header-font-color);
+}
+
+#history-toggle:hover {
+  transform: none;
+  animation: shake 0.8s ease-in-out;
+}
+
+.icon-sun {
+  display: none;
+  transition: transform 0.2s;
+}
+
+.icon-moon {
+  display: block;
+  transition: transform 0.2s;
+}
+
+body.dark-mode .icon-sun {
+  display: block;
+  transition: transform 0.2s;
+}
+
+body.dark-mode .icon-moon {
+  display: none;
+  transition: transform 0.2s;
 }
 
 div.container {
@@ -221,4 +256,25 @@ body.dark-mode .history-paper {
   opacity: 1;
   visibility: visible;
   transform: translateX(-50%) translateY(0px);
+}
+
+@keyframes shake {
+  0% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(15deg);
+  }
+  40% {
+    transform: rotate(-20deg);
+  }
+  60% {
+    transform: rotate(20deg);
+  }
+  80% {
+    transform: rotate(-15deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }

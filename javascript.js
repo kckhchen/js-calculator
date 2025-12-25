@@ -202,11 +202,9 @@ const sunIcon = '/assets/light-mode.png';
 function setDarkTheme(isDark) {
   if (isDark) {
     body.classList.add('dark-mode');
-    themeIcon.src = sunIcon;
     localStorage.setItem('theme', 'dark');
   } else {
     body.classList.remove('dark-mode');
-    themeIcon.src = moonIcon;
     localStorage.setItem('theme', 'light');
   }
 }
