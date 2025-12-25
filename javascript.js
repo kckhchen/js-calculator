@@ -47,10 +47,12 @@ function changeDisplay(e) {
 
 function clearDisplay() {
   display.textContent = '';
+  updateDisplay();
 }
 
 function deleteLastChar() {
   display.textContent = display.textContent.slice(0, -1);
+  updateDisplay();
 }
 
 function handleOperator(opt) {
@@ -67,6 +69,7 @@ function handleOperator(opt) {
   } else {
     display.textContent += opt;
   }
+  updateDisplay();
   answerReturned = false;
 }
 
@@ -99,6 +102,7 @@ function appendNumber(num) {
   } else {
     display.textContent += num;
   }
+  updateDisplay();
 }
 
 function handleEqual() {
@@ -107,6 +111,7 @@ function handleEqual() {
   let [num1, operator, num2] = expression;
   let answer = getAnswer(num1, num2, operator);
   display.textContent = answer;
+  updateDisplay();
   answerReturned = true;
   addHistoryItem([num1, operator, num2, answer]);
 }
@@ -121,8 +126,8 @@ function getEval() {
 }
 
 function getAnswer(num1, num2, operator) {
-  num1 = Number(num1);
-  num2 = Number(num2);
+  num1 = parseFloat(num1);
+  num2 = parseFloat(num2);
   let answer;
   switch (operator) {
     case '+':
@@ -142,7 +147,7 @@ function getAnswer(num1, num2, operator) {
       answer = num1 / num2;
       break;
   }
-  return roundTo(answer, 3);
+  return roundTo(answer, 8);
 }
 
 const roundTo = function (num, decimal) {
@@ -267,4 +272,19 @@ function showToast(message = 'Copied!') {
   toastTimeOut = setTimeout(() => {
     toast.classList.remove('show');
   }, TOASTTIMEOUT);
+}
+
+function updateDisplay() {
+  const length = display.textContent.length;
+
+  if (length > 8 && length < 13) {
+    size = 54 - 4 * (length - 8);
+  } else if (length >= 13 && length < 16) {
+    size = 37 - 2.4 * (length - 12);
+  } else if (length >= 16) {
+    size = 28 - 1.2 * (length - 16);
+  } else {
+    size = 54;
+  }
+  display.style.fontSize = size + 'px';
 }
