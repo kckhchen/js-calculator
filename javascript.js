@@ -1,7 +1,7 @@
 const container = document.querySelector('.container');
 const display = document.querySelector('.display');
 const operatorList = ['+', '-', '×', '÷'];
-const clickSound = './clickSound.mov';
+const sound = new Audio('./clickSound.mov');
 
 let currentOpt;
 let answerReturned;
@@ -10,7 +10,8 @@ container.addEventListener('click', (e) => {
   if (e.target.nodeName != 'BUTTON') {
     return;
   }
-  new Audio(clickSound).play();
+  sound.currentTime = 0; // Rewind to start (allows rapid fire)
+  sound.play();
   changeDisplay(e);
   if (e.target.id == 'equal' && getEval(e) != undefined) {
     let [num1, operator, num2] = getEval(e);
@@ -48,8 +49,11 @@ function changeDisplay(e) {
   } else if (e.target.classList[0] == 'operator') {
     currentOpt = e.target.textContent;
     if (operatorList.includes(display.textContent.at(-1))) {
+      if (display.textContent === '-' && currentOpt !== '-') {
+        return;
+      }
       display.textContent = display.textContent.slice(0, -1) + currentOpt;
-    } else if (display.textContent == '') {
+    } else if (display.textContent == '' && currentOpt != '-') {
       return;
     } else if (operatorList.some((opt) => display.textContent.includes(opt))) {
       const equalBtn = document.getElementById('equal');
@@ -65,14 +69,18 @@ function changeDisplay(e) {
       display.textContent = '';
     }
     if (e.target.id == 'dot') {
+      const parts = display.textContent.split(/[+\-×÷]/);
+      const currentNum = parts[parts.length - 1];
+
+      if (currentNum.includes('.')) {
+        return;
+      }
+
       if (
-        (display.textContent.includes('.') &&
-          !operatorList.some((opt) => display.textContent.includes(opt))) ||
-        display.textContent.match(/\d?\..*\d?\./) ||
-        display.textContent == '' ||
+        display.textContent === '' ||
         operatorList.includes(display.textContent.at(-1))
       ) {
-        return;
+        display.textContent += '0';
       }
     }
     display.textContent += e.target.textContent;
@@ -81,7 +89,7 @@ function changeDisplay(e) {
 }
 
 function getEval(e) {
-  const regex = /(\d*\.*\d+)([+\-×÷])(\d*\.*\d+)/;
+  const regex = /(-?\d*\.?\d*)([+\-×÷])(-?\d*\.?\d*)/;
   if (display.textContent.match(regex)) {
     let [num1, operator, num2] = display.textContent.match(regex).slice(1);
     return [num1, operator, num2];
